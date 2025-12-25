@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Kanika!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Nunito:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff9a9e;
+            --secondary: #fad0c4;
+            --accent: #a18cd1;
+            --gold: #ffd700;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%);
+            min-height: 100vh;
+            color: #4a4a4a;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%23ff69b4"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
+        }
+
+        /* Typography */
+        h1, h2, .fancy-font {
+            font-family: 'Pacifico', cursive;
+        }
+        .handwritten {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Intro Overlay */
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        /* Gift Box Animation */
+        .gift-box {
+            font-size: 80px;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+            transition: transform 0.3s;
+        }
+        .gift-box:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Main Content Transitions */
+        .hidden-content {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease-out;
+        }
+        .visible-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Floating Elements Background */
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .float-item {
+            position: absolute;
+            opacity: 0.6;
+            animation: floatUp 15s linear infinite;
+        }
+
+        /* Envelope Styles */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+        .envelope {
+            position: relative;
+            background: #fff0f5;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+        .envelope.open .letter {
+            transform: translateY(-100px);
+            z-index: 2;
+        }
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%; /* Adjust height */
+            background: #ffb7b2;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            transform-origin: top;
+            transition: transform 0.6s 0.2s, z-index 0.2s;
+            z-index: 3;
+        }
+        .pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, #ff9a9e, #ffb7b2);
+            clip-path: polygon(0 0, 50% 40%, 100% 0, 100% 100%, 0 100%);
+            z-index: 2;
+        }
+        .letter {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: white;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.6s 0.6s;
+            z-index: 1;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Cake CSS */
+        .cake-container {
+            position: relative;
+            width: 250px;
+            height: 200px;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+        .cake-layer {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f8b4d9;
+            border-radius: 10px 10px 0 0;
+            box-shadow: inset -10px 0 rgba(0,0,0,0.05);
+        }
+        .cake-bottom { width: 200px; height: 80px; bottom: 0; background: #ff9a9e; }
+        .cake-middle { width: 160px; height: 60px; bottom: 80px; background: #fbc2eb; }
+        .cake-top { width: 120px; height: 50px; bottom: 140px; background: #fad0c4; }
+        
+        .icing {
+            position: absolute;
+            top: -10px;
+            width: 100%;
+            height: 20px;
+            background: #fff;
+            border-radius: 10px;
+        }
+        .drip {
+            position: absolute;
+            top: 5px;
+            width: 15px;
+            height: 25px;
+            background: #fff;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .candle {
+            position: absolute;
+            width: 10px;
+            height: 30px;
+            background: repeating-linear-gradient(45deg, #ffd700, #ffd700 5px, #fff 5px, #fff 10px);
+            bottom: 190px;
+            left: 50%;
+            margin-left: -5px;
+            z-index: 5;
+            cursor: pointer;
+        }
+        .flame {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 18px;
+            background: #ffcc00;
+            border-radius: 50% 50% 20% 20%;
+            box-shadow: 0 0 10px #ff6600, 0 0 20px #ffcc00;
+            animation: flicker 0.5s infinite alternate;
+            transform-origin: bottom center;
+        }
+        .flame.out {
+            display: none;
+        }
+        .smoke {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: rgba(150,150,150,0.5);
+            border-radius: 50%;
+            animation: smokeRise 1s forwards;
+            display: none;
+        }
+
+        /* Photo Frame */
+        .polaroid {
+            background: #fff;
+            padding: 10px 10px 40px 10px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+            transform: rotate(-3deg);
+            transition: transform 0.3s;
+        }
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.05);
+            z-index: 10;
+        }
+        /* UPDATED: CSS class for the image tag to make sure it fits perfectly */
+        .polaroid-photo {
+            width: 100%;
+            height: 200px;
+            object-fit: cover; /* This ensures the photo crops nicely without stretching */
+            background-color: #eee;
+            border-radius: 2px;
+        }
+
+        /* Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); }
+            100% { transform: translateY(-10vh) rotate(360deg); }
+        }
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1); opacity: 1; }
+            100% { transform: translateX(-50%) scale(1.1); opacity: 0.8; }
+        }
+        @keyframes smokeRise {
+            0% { transform: translateX(-50%) translateY(0) scale(1); opacity: 0.8; }
+            100% { transform: translateX(-50%) translateY(-30px) scale(2); opacity: 0; }
+        }
+        @keyframes pop {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 640px) {
+            .gift-box { font-size: 60px; }
+            h1 { font-size: 2.5rem; }
+            .cake-container { transform: scale(0.8); }
+        }
+    </style>
+</head>
+<body class="selection:bg-pink-300 selection:text-white">
+
+    <!-- Intro / Lock Screen -->
+    <div id="intro-overlay">
+        <div class="text-center">
+            <h2 class="text-white text-3xl mb-4 fancy-font">Hey Kanika!</h2>
+            <p class="text-white mb-8 text-lg">I have a surprise for you...</p>
+            <div class="gift-box" onclick="startParty()">🎁</div>
+            <p class="text-white mt-4 text-sm animate-pulse">Tap the gift to open!</p>
+        </div>
+    </div>
+
+    <!-- Background Elements -->
+    <div class="floating-bg" id="floatingBg"></div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="container mx-auto px-4 py-8 hidden max-w-4xl relative z-10">
+        
+        <!-- Header -->
+        <header class="text-center mb-12 hidden-content" id="section-1">
+            <div class="inline-block bg-white/80 backdrop-blur-sm p-6 rounded-3xl shadow-xl border-4 border-white">
+                <h1 class="text-4xl md:text-7xl text-pink-500 mb-2 drop-shadow-sm">Happy Birthday Kanika!</h1>
+                <h2 class="text-3xl md:text-5xl text-purple-500 fancy-font">To My Bestie ✨</h2>
+            </div>
+        </header>
+
+        <!-- Memory Lane Grid -->
+        <section class="mb-16 hidden-content" id="section-2">
+            <h3 class="text-center text-3xl text-white fancy-font mb-8 drop-shadow-md">7 Shades of Kanika 📸</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Photo 1 -->
+                <div class="polaroid transform rotate-[-2deg]">
+                    <img src="https://i.postimg.cc/k4fSRFsc/Whats_App_Image_2025_12_13_at_10_52_32_PM.jpg" alt="Kanika Photo 1" class="polaroid-photo">
+                    <div class="text-center mt-4 handwritten text-xl text-gray-600">The Queen 👑</div>
+                </div>
+                <!-- Photo 2 -->
+                <div class="polaroid transform rotate-[3deg] md:mt-8">
+                    <img src="https://i.postimg.cc/639RQ1rH/Whats_App_Image_2025_12_13_at_10_52_32_PM_1.jpg" alt="Kanika Photo 2" class="polaroid-photo">
+                    <div class="text-center mt-4 handwritten text-xl text-gray-600">Always Smiling 💖</div>
+                </div>
+                <!-- Photo 3 -->
+                <div class="polaroid transform rotate-[-1deg]">
+                    <img src="https://i.postimg.cc/3xYD1cqP/Whats_App_Image_2025_12_13_at_10_52_33_PM.jpg" alt="Kanika Photo 3" class="polaroid-photo">
+                    <div class="text-center mt-4 handwritten text-xl text-gray-600">Partner in Crime 👯‍♀️</div>
+                </div>
+                <!-- Photo 4 -->
+                <div class="polaroid transform rotate-[2deg]">
+                    <img src="https://i.postimg.cc/TwRmPHVL/Whats_App_Image_2025_12_13_at_10_52_33_PM_1.jpg" alt="Kanika Photo 4" class="polaroid-photo">
+                    <div class="text-center mt-4 handwritten text-xl text-gray-600">That One Trip ✈️</div>
+                </div>
+                <!-- Photo 5 -->
+                <div class="polaroid transform rotate-[-3deg] md:mt-8">
+                    <img src="https://i.postimg.cc/C1FDK6GD/Whats_App_Image_2025_12_13_at_10_52_34_PM.jpg" alt="Kanika Photo 5" class="polaroid-photo">
+                    <div class="text-center mt-4 handwritten text-xl text-gray-600">Favorite Memory 🌟</div>
+                </div>
+                <!-- Photo 6 -->
+                <div class="polaroid transform rotate-[1deg]">
+                    <img src="https://i.postimg.cc/nzH7Lw4m/Whats_App_Image_2025_12_13_at_10_52_34_PM_1.jpg" alt="Kanika Photo 6" class="polaroid-photo">
+                    <div class="text-center mt-4 handwritten text-xl text-gray-600">Glam Mode 💅</div>
+                </div>
+                <!-- Photo 7 (Placeholder - add your 7th photo path here if you have it) -->
+                <div class="polaroid transform rotate-[-2deg] md:col-start-2">
+                    <img src="https://i.postimg.cc/cHsYJ5Rf/Whats_App_Image_2025_12_13_at_10_52_35_PM.jpg" alt="Kanika Photo 7" class="polaroid-photo">
+                    <div class="text-center mt-4 handwritten text-xl text-gray-600">Forever & Always ❤️</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Letter -->
+        <section class="flex justify-center mb-16 hidden-content" id="section-3">
+            <div class="envelope-wrapper w-full max-w-md h-64 cursor-pointer" onclick="toggleEnvelope(this)">
+                <div class="envelope w-full h-full">
+                    <div class="pocket flex items-center justify-center">
+                        <span class="text-white text-3xl fancy-font relative z-10">Click to Read 💌</span>
+                    </div>
+                    <div class="flap"></div>
+                    <div class="letter overflow-y-auto">
+                        <h4 class="text-xl fancy-font text-pink-500 mb-2">My Dearest Kanika,</h4>
+                        <p class="text-sm md:text-base handwritten text-gray-600 leading-relaxed">
+                            Happy Birthday! 🎉 I am so incredibly lucky to have you in my life. Thank you for being the listener to my rants, the partner in my shopping sprees, and the sister I got to choose. May your day be filled with as much joy, sparkle, and cake as you bring into my life! 
+                            <br><br>
+                            Love you loads! ❤️
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Interactive Cake -->
+        <section class="text-center mb-16 hidden-content" id="section-4">
+            <div class="bg-white/90 backdrop-blur-md p-8 rounded-3xl shadow-xl inline-block">
+                <h3 class="text-2xl text-pink-600 fancy-font mb-4">Make a Wish & Tap the Candle! 🎂</h3>
+                
+                <div class="cake-container">
+                    <div class="cake-layer cake-bottom"></div>
+                    <div class="cake-layer cake-middle"></div>
+                    <div class="cake-layer cake-top">
+                        <div class="icing"></div>
+                        <div class="drip" style="left: 10px;"></div>
+                        <div class="drip" style="left: 40px; height: 15px;"></div>
+                        <div class="drip" style="left: 70px;"></div>
+                        <div class="drip" style="left: 100px; height: 18px;"></div>
+                    </div>
+                    
+                    <div class="candle" id="mainCandle" onclick="blowCandle()">
+                        <div class="flame" id="flame"></div>
+                        <div class="smoke" id="smoke"></div>
+                    </div>
+                </div>
+
+                <div id="wish-message" class="hidden mt-8">
+                    <p class="text-2xl text-purple-600 fancy-font animate-bounce">✨ May all your dreams come true! ✨</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-white pb-8 fancy-font opacity-80">
+            <p>Made with 💖 just for you</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- Initialization ---
+        function startParty() {
+            const overlay = document.getElementById('intro-overlay');
+            const mainContent = document.getElementById('main-content');
+            
+            // Fade out overlay
+            overlay.style.opacity = '0';
+            overlay.style.transform = 'scale(1.1)';
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                mainContent.classList.remove('hidden');
+                
+                // Trigger visual effects
+                createFloatingElements();
+                createConfetti();
+                revealSections();
+            }, 800);
+        }
+
+        function revealSections() {
+            const sections = ['section-1', 'section-2', 'section-3', 'section-4'];
+            sections.forEach((id, index) => {
+                setTimeout(() => {
+                    const el = document.getElementById(id);
+                    el.classList.remove('hidden-content');
+                    el.classList.add('visible-content');
+                }, index * 400); // Staggered reveal
+            });
+        }
+
+        // --- Interactive Logic ---
+        
+        // Envelope
+        function toggleEnvelope(el) {
+            const envelope = el.querySelector('.envelope');
+            envelope.classList.toggle('open');
+            if (envelope.classList.contains('open')) {
+                launchSmallConfetti(el.getBoundingClientRect().left + 100, el.getBoundingClientRect().top);
+            }
+        }
+
+        // Candle
+        function blowCandle() {
+            const flame = document.getElementById('flame');
+            const smoke = document.getElementById('smoke');
+            const wishMsg = document.getElementById('wish-message');
+
+            if (!flame.classList.contains('out')) {
+                flame.classList.add('out');
+                smoke.style.display = 'block';
+                
+                setTimeout(() => {
+                    wishMsg.classList.remove('hidden');
+                    createConfetti(); // MORE CONFETTI!
+                }, 500);
+            }
+        }
+
+        // --- Visual Effects ---
+
+        // Floating Background Items
+        function createFloatingElements() {
+            const bg = document.getElementById('floatingBg');
+            const items = ['🎈', '💖', '✨', '🎂', '🌸', '🎁', '🦄'];
+            
+            for(let i=0; i<30; i++) {
+                const el = document.createElement('div');
+                el.classList.add('float-item');
+                el.innerText = items[Math.floor(Math.random() * items.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                el.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                el.style.animationDelay = (Math.random() * 5) + 's';
+                bg.appendChild(el);
+            }
+        }
+
+        // Simple JS Confetti Implementation
+        function createConfetti() {
+            const colors = ['#ff9a9e', '#a18cd1', '#fbc2eb', '#fad0c4', '#ffd700', '#fff'];
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.zIndex = '100';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
+                document.body.appendChild(confetti);
+
+                // Animate
+                const animationDuration = Math.random() * 3 + 2;
+                const keyframes = [
+                    { transform: `translate3d(0,0,0) rotateX(0) rotateY(0)`, opacity: 1 },
+                    { transform: `translate3d(${Math.random()*100 - 50}px, 100vh, 0) rotateX(${Math.random()*360}deg) rotateY(${Math.random()*360}deg)`, opacity: 0 }
+                ];
+
+                const animation = confetti.animate(keyframes, {
+                    duration: animationDuration * 1000,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
+
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+
+        function launchSmallConfetti(x, y) {
+            const colors = ['#ff9a9e', '#ffd700'];
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.left = x + 'px';
+                confetti.style.top = y + 'px';
+                confetti.style.width = '6px';
+                confetti.style.height = '6px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.zIndex = '100';
+                document.body.appendChild(confetti);
+
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 100 + 50;
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity;
+
+                const animation = confetti.animate([
+                    { transform: 'translate(0,0) scale(1)', opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                });
+
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+
+        // Sparkle Mouse Trail
+        let lastSparkleTime = 0;
+        document.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastSparkleTime > 50) { // Limit creation rate
+                createSparkle(e.clientX, e.clientY);
+                lastSparkleTime = now;
+            }
+        });
+
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.style.position = 'fixed';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            sparkle.style.width = '10px';
+            sparkle.style.height = '10px';
+            sparkle.style.background = 'radial-gradient(circle, #fff, rgba(255,255,255,0))';
+            sparkle.style.borderRadius = '50%';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.zIndex = '9999';
+            sparkle.style.boxShadow = '0 0 10px #fff, 0 0 20px #ff9a9e';
+            
+            document.body.appendChild(sparkle);
+
+            const animation = sparkle.animate([
+                { transform: 'scale(0) rotate(0deg)', opacity: 1 },
+                { transform: 'scale(1.5) rotate(180deg)', opacity: 0 }
+            ], {
+                duration: 600,
+                easing: 'linear'
+            });
+
+            animation.onfinish = () => sparkle.remove();
+        }
+    </script>
+</body>
+</html>
